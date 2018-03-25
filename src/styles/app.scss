@@ -1,0 +1,13 @@
+@import url(https://fonts.googleapis.com/earlyaccess/notosanskr.css);
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+
+@import './colors.scss';
+@import '~bootstrap/scss/bootstrap.scss';
+
+* {
+  font-family: 'Noto Sans KR', sans-serif;
+  word-break: keep-all;
+  -ms-hyphens: none;
+  -webkit-hyphens: none;
+  hyphens: none;
+}
