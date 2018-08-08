@@ -2,9 +2,9 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const isProd = process.argv.indexOf('-p') !== -1;
+const isProd = process.argv.indexOf('--mode=production') !== -1;
 
-//const vendorList = ['react', 'react-dom', '@babel/polyfill'];
+const vendorList = ['react', 'react-dom', '@babel/polyfill'];
 
 let pluginList = [
   new webpack.DefinePlugin({
@@ -16,50 +16,30 @@ let pluginList = [
   }),
   new ExtractTextPlugin('style.css'),
   new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ko/),
-  // new webpack.optimize.CommonsChunkPlugin({
-  //   name: 'vendor' // Specify the common bundle's name.
-  // })
 ];
-
-if (isProd) {
-  const prodPlugins = [
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        conditionals: true,
-        unused: true,
-        comparisons: true,
-        sequences: true,
-        dead_code: true,
-        evaluate: true,
-        if_return: true,
-        join_vars: true
-      },
-      output: {
-        comments: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false
-    })
-  ];
-  pluginList = pluginList.concat(prodPlugins);
-}
 
 module.exports = {
   devtool: 'source-map',
   entry: {
     main: ['@babel/polyfill',
       path.resolve(__dirname, 'src/index.jsx')],
-    //vendor: vendorList
+    vendor: vendorList,
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'app.js',
+    filename: '[name].js',
     publicPath: '/'
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    }
   },
   module: {
     rules: [
